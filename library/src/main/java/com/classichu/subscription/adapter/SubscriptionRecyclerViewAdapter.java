@@ -32,23 +32,16 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     public final static int VIEW_TYPE_MORE_TITLE = 123;
     public final static int VIEW_TYPE_MORE_LIST = 124;
 
-    public List<SubscriptionBean> getSubscriptionBeanList() {
-        return mSubscriptionBeanList;
-    }
-
     private List<SubscriptionBean> mSubscriptionBeanList = new ArrayList<>();
-    private List<Integer> mCanNotDragPosList = new ArrayList<>();
-
-
-    public SubscriptionRecyclerViewAdapter(List<SubscriptionBean> itemTouchBeanList,List<Integer> canNotDragPosList, RecyclerView recyclerView,
+    public SubscriptionRecyclerViewAdapter(List<SubscriptionBean> subscriptionBeanList,RecyclerView recyclerView,
                                            int listItemLayoutID) {
         initItemTouchHelper(recyclerView);
         mListItemLayoutID = listItemLayoutID;
-        mSubscriptionBeanList = itemTouchBeanList;
+        mSubscriptionBeanList = subscriptionBeanList;
         /**
          *不可移动的index
          */
-        mCanNotDragPosList=canNotDragPosList;
+     //   mCanNotDragPosList=canNotDragPosList;
 
 
         /**
@@ -108,17 +101,21 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder,  int position) {
+
+        final SubscriptionBean subscriptionBean=mSubscriptionBeanList.get(position);
         if (holder instanceof ListRecyclerViewViewHolder) {
             final ListRecyclerViewViewHolder viewHolder = (ListRecyclerViewViewHolder) holder;
-            viewHolder.id_tv_item_title.setText(mSubscriptionBeanList.get(position).getText());
 
-            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(viewHolder.itemView.getContext(),R.color.classicGridItemBg));
+            viewHolder.id_tv_item_title.setText(subscriptionBean.getText());
+
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(viewHolder.itemView.
+                    getContext(),R.color.classicGridItemBg));
             /**
              * 设置不可拖动的背景
              */
-            if (mCanNotDragPosList.contains(position)) {
-                viewHolder.itemView.setAlpha(0.6f);
+            if (subscriptionBean.isCanNotDrag()) {
+                viewHolder.itemView.setAlpha(0.5f);
             } else {
                 viewHolder.itemView.setAlpha(1f);
             }
@@ -126,21 +123,19 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
             viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    CLog.d("position:" + position);
                     int moreTitleItemIndex = findMoreTitleItemIndex();
                     int longClickPosition = viewHolder.getAdapterPosition();
+                    CLog.d("longClickPosition:" + longClickPosition);
                     /**
                      * 设置可拖动
                      *
                      * 我的订阅部分的item能拖动，
                      * 并且 item未设置不可拖动的，则执行拖拽
                      */
-                    if (!mCanNotDragPosList.contains(position) && longClickPosition < moreTitleItemIndex) {
+                    if (!subscriptionBean.isCanNotDrag() && longClickPosition < moreTitleItemIndex) {
                         mItemTouchHelper.startDrag(viewHolder);
-                        CLog.d("viewHolder.getAdapterPosition() startDrag:" + viewHolder.getAdapterPosition());
-                        /**
-                         *
-                         */
+                        CLog.d("longClickPosition startDrag:" + longClickPosition);
+                        //
                         Context context = viewHolder.itemView.getContext();
                         //获取系统震动服务
                         Vibrator vib = (Vibrator) context.getSystemService(Service.VIBRATOR_SERVICE);
@@ -160,13 +155,13 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 protected void onNotFastClick(View v) {
 
                     //item 不可拖动
-                    if (mCanNotDragPosList.contains(position)) {
+                    if (subscriptionBean.isCanNotDrag()) {
                         return;
                     }
 
                     int moreTitleItemIndex = findMoreTitleItemIndex();
 
-                    int clickPosition = viewHolder.getAdapterPosition();//得到点击ViewHolder的position
+                    int clickPosition =  viewHolder.getAdapterPosition();//得到点击ViewHolder的position
                     int newPosition;
                     CLog.d("clickPosition:" + clickPosition);
                     if (clickPosition > moreTitleItemIndex) {//大于moreTitleItemIndex  支持点击订阅新的channel
@@ -195,8 +190,8 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
 
         } else if (holder instanceof TitleRecyclerViewViewHolder) {
             TitleRecyclerViewViewHolder viewHolder = (TitleRecyclerViewViewHolder) holder;
-            viewHolder.id_tv_item_title.setText(mSubscriptionBeanList.get(position).getText());
-            viewHolder.id_tv_item_title_more.setText(mSubscriptionBeanList.get(position).getText_sub());
+            viewHolder.id_tv_item_title.setText(subscriptionBean.getText());
+            viewHolder.id_tv_item_title_more.setText(subscriptionBean.getText_sub());
 
         }
     }
@@ -296,12 +291,13 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
             int fromPosition = viewHolder.getAdapterPosition();//得到拖动ViewHolder的position
             int toPosition = target.getAdapterPosition();//得到目标ViewHolder的position
 
-            CLog.d("layoutPosition:" + viewHolder.getLayoutPosition());
+            CLog.d("layoutPosition:" + viewHolder.getLayoutPosition());//test
             CLog.d("fromPosition:" + fromPosition);
             /**
              * 设置不可拖动
              */
-            if (mCanNotDragPosList.contains(fromPosition) || mCanNotDragPosList.contains(toPosition)) {
+           // if (mCanNotDragPosList.contains(fromPosition) || mCanNotDragPosList.contains(toPosition)) {
+            if (mSubscriptionBeanList.get(fromPosition).isCanNotDrag()||mSubscriptionBeanList.get(toPosition).isCanNotDrag()){
                 return false;
             }
          /*

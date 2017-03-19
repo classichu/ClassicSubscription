@@ -9,6 +9,19 @@ import java.io.Serializable;
 public class SubscriptionBean implements Serializable {
     private int id;
     private String text;
+    private String text_sub;
+    private int viewType;
+
+    public boolean isCanNotDrag() {
+        return canNotDrag;
+    }
+
+    public void setCanNotDrag(boolean canNotDrag) {
+        this.canNotDrag = canNotDrag;
+    }
+
+    private boolean canNotDrag;
+
 
     public int getId() {
         return id;
@@ -42,6 +55,4 @@ public class SubscriptionBean implements Serializable {
         this.viewType = viewType;
     }
 
-    private String text_sub;
-    private int viewType;
 }
