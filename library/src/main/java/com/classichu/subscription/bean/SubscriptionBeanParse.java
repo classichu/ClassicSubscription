@@ -48,6 +48,14 @@ public class SubscriptionBeanParse implements Serializable {
         mMyItemBeanList.add(itemBean);
         return this;
     }
+    public SubscriptionBeanParse addMyItemBeans(List<ItemBean>  myItemBeanList) {
+        mMyItemBeanList.addAll(myItemBeanList);
+        return this;
+    }
+    public SubscriptionBeanParse addMoreItemBeans(List<ItemBean>  moreItemBeanList) {
+        mMoreItemBeanList.addAll(moreItemBeanList);
+        return this;
+    }
 
     public List<SubscriptionBean> generateData() {
         List<SubscriptionBean> subscriptionBeanAllList = new ArrayList<>();
