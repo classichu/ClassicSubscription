@@ -16,6 +16,6 @@ public class SubscriptionDataWrapper implements Serializable {
         this.subscriptionBeanList = subscriptionBeanList;
     }
 
-    private   List<SubscriptionBean> subscriptionBeanList;
+    private List<SubscriptionBean> subscriptionBeanList;
 
 }

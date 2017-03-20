@@ -32,6 +32,10 @@ public class SubscriptionRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     public final static int VIEW_TYPE_MORE_TITLE = 123;
     public final static int VIEW_TYPE_MORE_LIST = 124;
 
+    public List<SubscriptionBean> getSubscriptionBeanList() {
+        return mSubscriptionBeanList;
+    }
+
     private List<SubscriptionBean> mSubscriptionBeanList = new ArrayList<>();
     public SubscriptionRecyclerViewAdapter(List<SubscriptionBean> subscriptionBeanList,RecyclerView recyclerView,
                                            int listItemLayoutID) {

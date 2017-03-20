@@ -9,7 +9,12 @@ import android.view.View;
 
 import com.classichu.classichu.classic.ClassicFragment;
 import com.classichu.subscription.adapter.SubscriptionRecyclerViewAdapter;
+import com.classichu.subscription.bean.ItemBean;
+import com.classichu.subscription.bean.SubscriptionBean;
 import com.classichu.subscription.bean.SubscriptionDataWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,12 +40,12 @@ public class ClassicSubscriptionFragment extends ClassicFragment {
      * @return A new instance of fragment ClassicSubscriptionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ClassicSubscriptionFragment newInstance(String param1, String param2,SubscriptionDataWrapper subscriptionDataWrapper) {
+    public static ClassicSubscriptionFragment newInstance(String param1, String param2, SubscriptionDataWrapper subscriptionDataWrapper) {
         ClassicSubscriptionFragment fragment = new ClassicSubscriptionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
-        args.putSerializable(ARG_PARAM4,subscriptionDataWrapper);
+        args.putSerializable(ARG_PARAM4, subscriptionDataWrapper);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,7 +56,7 @@ public class ClassicSubscriptionFragment extends ClassicFragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            mParam4 = (SubscriptionDataWrapper)getArguments().getSerializable(ARG_PARAM4);
+            mParam4 = (SubscriptionDataWrapper) getArguments().getSerializable(ARG_PARAM4);
         }
     }
 
@@ -59,7 +64,9 @@ public class ClassicSubscriptionFragment extends ClassicFragment {
     protected int setupLayoutResId() {
         return R.layout.fragment_classic_subscription;
     }
-    SubscriptionRecyclerViewAdapter mAdapter;
+
+    private SubscriptionRecyclerViewAdapter mAdapter;
+
     @Override
     protected void initView(View view) {
 
@@ -74,13 +81,31 @@ public class ClassicSubscriptionFragment extends ClassicFragment {
         mRecyclerView.setAdapter(mAdapter);
 
 
-
     }
 
+    public List<ItemBean> getSubscriptionItemBeanList() {
+        List<ItemBean> ibList = new ArrayList<>();
+        //
+        if (mAdapter.getSubscriptionBeanList() != null
+                && mAdapter.getSubscriptionBeanList().size() > 0) {
+            List<SubscriptionBean> sbList = mAdapter.getSubscriptionBeanList();
+            for (int i = 0; i < sbList.size(); i++) {
+                if (sbList.get(i).getViewType()
+                        == SubscriptionRecyclerViewAdapter.VIEW_TYPE_MORE_TITLE) {
+                    //读到更多的标题 即表示结束
+                    break;
+                }
+                if (sbList.get(i).getViewType()
+                        != SubscriptionRecyclerViewAdapter.VIEW_TYPE_MY_TITLE) {
+                    ibList.add(new ItemBean(String.valueOf(sbList.get(i).getId()), sbList.get(i).getText()));
+                }
+            }
+        }
+        return ibList;
+    }
 
     @Override
-    protected int configRecyclerViewResId()
-    {
+    protected int configRecyclerViewResId() {
         return R.id.id_recycler_view;
     }
 
@@ -88,5 +113,6 @@ public class ClassicSubscriptionFragment extends ClassicFragment {
     protected void initListener() {
 
     }
+
 
 }
