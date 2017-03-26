@@ -73,8 +73,6 @@ public class ClassicSubscriptionFragment extends ClassicFragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 4));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        //##id_recycler_view.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
-
         mAdapter = new SubscriptionRecyclerViewAdapter(mParam4.getSubscriptionBeanList(),
                 mRecyclerView, R.layout.item_grid_classic);
 

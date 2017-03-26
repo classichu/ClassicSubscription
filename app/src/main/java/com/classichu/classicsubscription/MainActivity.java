@@ -1,17 +1,15 @@
 package com.classichu.classicsubscription;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.classichu.subscription.ClassicSubscriptionFragment;
 import com.classichu.subscription.bean.ItemBean;
-import com.classichu.subscription.bean.SubscriptionBean;
-import com.classichu.subscription.bean.SubscriptionBeanParse;
-import com.classichu.subscription.bean.SubscriptionDataWrapper;
+import com.classichu.subscription.helper.ClassicSubscriptionDataHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<SubscriptionBean> subscriptionBeanList = new SubscriptionBeanParse()
+      /*  List<SubscriptionBean> subscriptionBeanList = new SubscriptionBeanParse()
                 .addMyItemBean(new ItemBean("test1", "测试1", true))
                 .addMyItemBean(new ItemBean("test2", "测试2", true))
                 .addMyItemBean(new ItemBean("test3", "测试3"))
@@ -35,22 +33,34 @@ public class MainActivity extends AppCompatActivity {
                 .addMoreItemBean(new ItemBean("dsada5", "测试10"))
                 .addMoreItemBean(new ItemBean("dsada5", "测试11"))
                 .addMoreItemBean(new ItemBean("dsada5", "测试12"))
-                .generateData();
+                .generateData();*/
 
+        List<ItemBean> my = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            my.add(new ItemBean(String.valueOf(i), "tut" + i));
+        }
 
-        mClassicSubscriptionFragment = ClassicSubscriptionFragment.newInstance("", "", new SubscriptionDataWrapper(subscriptionBeanList));
+        List<ItemBean> more = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            more.add(new ItemBean(String.valueOf(i), "dsa" + i));
+        }
+    /*    mClassicSubscriptionFragment = ClassicSubscriptionFragment.newInstance("", "",
+                new SubscriptionDataWrapper(subscriptionBeanList));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.id_frame_layout_content, mClassicSubscriptionFragment)
-                .commitAllowingStateLoss();
+                .commitAllowingStateLoss();*/
+
+
+        ClassicSubscriptionDataHelper.setDataAndToSubscription(this, my, more);
     }
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_finish, menu);
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
-    @Override
+  /*  @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.id_menu_finish:
@@ -58,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getData(ClassicSubscriptionDataHelper.callAtOnActivityResultBackSubscriptionData(requestCode, resultCode, data));
+
     }
 
     private void getData(List<ItemBean> itemBeanList) {
